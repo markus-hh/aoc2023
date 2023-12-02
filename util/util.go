@@ -6,16 +6,17 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
-func FetchInput(number int) string {
+func FetchInput(day int) string {
 	if len(os.Args) == 1 {
 		fmt.Println("No session id specified, cannot fetch input!")
 		os.Exit(1)
 	}
 
 	sessionId := os.Args[1]
-	url := "https://adventofcode.com/2023/day/" + strconv.Itoa(number) + "/input"
+	url := "https://adventofcode.com/2023/day/" + strconv.Itoa(day) + "/input"
 	request, _ := http.NewRequest("GET", url, nil)
 	request.Header.Set("Cookie", "session="+sessionId)
 	request.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
@@ -29,4 +30,13 @@ func FetchInput(number int) string {
 	body, error := io.ReadAll(response.Body)
 
 	return string(body)
+}
+
+func SplitLines(input string)(lines []string) {
+	for _, line := range strings.Split(input, "\n") {
+		if line != "" {
+			lines = append(lines, line)
+		}
+	}
+	return
 }
