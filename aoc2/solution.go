@@ -27,8 +27,7 @@ func isGamePossible(bagCapacity bagSubset, bagSubsets []bagSubset) bool {
 	return true
 }
 
-func main() {
-	input := util.FetchInput(2)
+func solvePart1(input string) {
 	bagCapacity := bagSubset{
 		redCubes: 12,
 		greenCubes: 13,
@@ -46,6 +45,38 @@ func main() {
 	}
 
 	fmt.Println(sum)
+}
+
+func solvePart2(input string) {
+	lines := util.SplitLines(input)
+
+	sum := 0
+	for _, line := range lines {
+		_, subsets := parseLine(line)
+		minimumCapacity := findMinimumCubesNeeded(subsets)
+		sum += calculatePower(minimumCapacity)
+	}
+
+	fmt.Println(sum)
+}
+
+func main() {
+	input := util.FetchInput(2)
+	solvePart2(input)
+}
+
+func calculatePower(subset bagSubset) int {
+	return subset.blueCubes * subset.greenCubes * subset.redCubes
+}
+
+func findMinimumCubesNeeded(subsets []bagSubset) (minimumCapacity bagSubset) {
+	for _, subset := range subsets {
+		minimumCapacity.redCubes = max(minimumCapacity.redCubes, subset.redCubes)
+		minimumCapacity.greenCubes = max(minimumCapacity.greenCubes, subset.greenCubes)
+		minimumCapacity.blueCubes = max(minimumCapacity.blueCubes, subset.blueCubes)
+	}
+
+	return
 }
 
 func parseLine(line string) (id int, subsets []bagSubset) {
