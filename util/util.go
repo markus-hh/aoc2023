@@ -32,11 +32,43 @@ func FetchInput(day int) string {
 	return string(body)
 }
 
-func SplitLines(input string)(lines []string) {
+func SplitLines(input string) (lines []string) {
 	for _, line := range strings.Split(input, "\n") {
 		if line != "" {
 			lines = append(lines, line)
 		}
 	}
 	return
+}
+
+func RemoveDuplicatesFromString(input string, seperator string) string {
+	for {
+		lengthBefore := len(input)
+		input = strings.ReplaceAll(input, seperator+seperator, seperator)
+		lengthAfter := len(input)
+
+		if lengthBefore == lengthAfter {
+			return input
+		}
+	}
+}
+
+func SplitWithoutDuplicates(input string, seperator string) []string {
+	processedInput := strings.Trim(RemoveDuplicatesFromString(input, seperator), " ")
+	return strings.Split(processedInput, seperator)
+}
+
+func RemoveDuplicates[T comparable](inputSlice []T) (sliceWithoutDuplicates []T) {
+	elementMap := make(map[T]bool)
+
+	for _, element := range inputSlice {
+		elementMap[element] = true
+	}
+
+	keys := make([]T, 0, len(elementMap))
+	for k := range elementMap {
+		keys = append(keys, k)
+	}
+	
+	return keys
 }
