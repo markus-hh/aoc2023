@@ -9,11 +9,16 @@ import (
 	"example.com/aoc/util"
 )
 
-func parseInput(lines []string) (times []int, distances []int) {
-	timeLine := util.RemoveDuplicatesFromString(lines[0], " ")
+func parseLines(lines []string) (timeLine string, distanceLine string) {
+	timeLine = util.RemoveDuplicatesFromString(lines[0], " ")
 	timeLine, _ = strings.CutPrefix(timeLine, "Time: ")
-	distanceLine := util.RemoveDuplicatesFromString(lines[1], " ")
+	distanceLine = util.RemoveDuplicatesFromString(lines[1], " ")
 	distanceLine, _ = strings.CutPrefix(distanceLine, "Distance: ")
+	return
+}
+
+func parseInput(lines []string) (times []int, distances []int) {
+	timeLine, distanceLine := parseLines(lines)
 
 	for _, rawTime := range strings.Split(timeLine, " ") {
 		time, _ := strconv.Atoi(rawTime)
@@ -25,6 +30,16 @@ func parseInput(lines []string) (times []int, distances []int) {
 		distances = append(distances, distance)
 	}
 
+	return
+}
+
+func parseInputPart2(lines[] string) (time int, distance int) {
+	timeLine, distanceLine := parseLines(lines)
+	timeLine = strings.Replace(timeLine, " ", "", -1)
+	distanceLine = strings.Replace(distanceLine, " ", "", -1)
+
+	time, _ = strconv.Atoi(timeLine)
+	distance, _ = strconv.Atoi(distanceLine)
 	return
 }
 
@@ -66,7 +81,15 @@ func solvePart1(input string) {
 	fmt.Println(solution)
 }
 
+func solvePart2(input string) {
+	lines := util.SplitLines(input)
+	time, distance := parseInputPart2(lines)
+
+	combinationAmount := determineWinCombinationAmount(time, distance)
+	fmt.Println(combinationAmount)
+}
+
 func main() {
 	input := util.FetchInput(6)
-	solvePart1(input)
+	solvePart2(input)
 }
