@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -71,4 +72,15 @@ func RemoveDuplicates[T comparable](inputSlice []T) (sliceWithoutDuplicates []T)
 	}
 	
 	return keys
+}
+
+func SolveQuadraticEquation(a float64, b float64, c float64) (leftX float64, rightX float64) {
+	rootValue := math.Sqrt(b*b - 4*a*c)
+	leftX = (-b - rootValue) / (2*a)
+	rightX = (-b + rootValue) / (2*a)
+	return
+}
+
+func FloatEquals(a float64, b float64) bool {
+	return math.Abs(a - b) < 1e-9
 }
