@@ -1,14 +1,21 @@
 package util
 
 import (
+	"cmp"
 	"fmt"
 	"io"
 	"math"
 	"net/http"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
+
+type MapElement[T, U any] struct {
+	Key T
+	Value U
+}
 
 func FetchInput(day int) string {
 	if len(os.Args) == 1 {
@@ -83,4 +90,60 @@ func SolveQuadraticEquation(a float64, b float64, c float64) (leftX float64, rig
 
 func FloatEquals(a float64, b float64) bool {
 	return math.Abs(a - b) < 1e-9
+}
+
+// https://stackoverflow.com/a/71624929
+func MapFunc[T, U any](originalSlice []T, mappingFunc func(T) U) []U {
+    mappedSlice := make([]U, len(originalSlice))
+    for i := range originalSlice {
+        mappedSlice[i] = mappingFunc(originalSlice[i])
+    }
+    return mappedSlice
+}
+
+func MakeHistogram[T comparable](slice []T) (histogram map[T]int) {
+	histogram = map[T]int {}
+	for _, element := range slice {
+		histogram[element]++
+	}
+	return
+}
+
+func SortMapByKey[K cmp.Ordered, V any](inputMap map[K]V) (sortedElements []MapElement[K, V]) {
+	for key, value := range inputMap {
+		element := MapElement[K, V] {
+			 Key: key,
+			 Value: value,
+		}
+		sortedElements = append(sortedElements, element)
+	}
+
+	slices.SortFunc(sortedElements,
+		func(a, b MapElement[K, V]) int {
+			return cmp.Compare(a.Key, b.Key)
+		})
+	return
+}
+
+func SortMapByValue[K comparable, V cmp.Ordered](inputMap map[K]V) (sortedElements []MapElement[K, V]) {
+	for key, value := range inputMap {
+		element := MapElement[K, V] {
+			 Key: key,
+			 Value: value,
+		}
+		sortedElements = append(sortedElements, element)
+	}
+
+	slices.SortFunc(sortedElements,
+		func(a, b MapElement[K, V]) int {
+			return cmp.Compare(a.Value, b.Value)
+		})
+	return
+}
+
+func AddAll[T any](container []T, newElements []T) []T {
+	for _, element := range newElements {
+		container = append(container, element)
+	}
+	return container
 }
