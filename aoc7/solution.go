@@ -9,6 +9,8 @@ import (
 	"example.com/aoc/util"
 )
 
+const JOKER_KEY = 0
+
 type Hand struct {
 	orders []int
 	bid    int
@@ -58,20 +60,31 @@ func parseHand(line string) Hand {
 func groupHands(hands []Hand) (groupdHands GroupedHands) {
 	for _, hand := range hands {
 		histogram := util.MakeHistogram[int](hand.orders)
+		jokerCards := histogram[JOKER_KEY]
+		delete(histogram, JOKER_KEY)
+		// guard value to ensure there is always at least one element in sortedHandCards
+
 		sortedHandCards := util.SortMapByValue[int, int](histogram)
 		slices.Reverse(sortedHandCards)
 
-		if sortedHandCards[0].Value == 5 {
+		var highestCardOccurence int
+		if jokerCards == 5 {
+			highestCardOccurence = 5
+		} else {
+			highestCardOccurence = sortedHandCards[0].Value + jokerCards
+		}
+		
+		if highestCardOccurence == 5 {
 			groupdHands.fiveOfAKinds = append(groupdHands.fiveOfAKinds, hand)
-		} else if sortedHandCards[0].Value == 4 {
+		} else if highestCardOccurence == 4 {
 			groupdHands.fourOfAKinds = append(groupdHands.fourOfAKinds, hand)
-		} else if sortedHandCards[0].Value == 3 && sortedHandCards[1].Value == 2 {
+		} else if highestCardOccurence == 3 && sortedHandCards[1].Value == 2 {
 			groupdHands.fullHouses = append(groupdHands.fullHouses, hand)
-		} else if sortedHandCards[0].Value == 3 {
+		} else if highestCardOccurence == 3 {
 			groupdHands.threeOfAKinds = append(groupdHands.threeOfAKinds, hand)
-		} else if sortedHandCards[0].Value == 2 && sortedHandCards[1].Value == 2 {
+		} else if highestCardOccurence == 2 && sortedHandCards[1].Value == 2 {
 			groupdHands.twoPairs = append(groupdHands.twoPairs, hand)
-		} else if sortedHandCards[0].Value == 2 {
+		} else if highestCardOccurence == 2 {
 			groupdHands.onePairs = append(groupdHands.onePairs, hand)
 		} else {
 			groupdHands.highCards = append(groupdHands.highCards, hand)
@@ -90,7 +103,8 @@ func mapCardToOrder(card rune) int {
 	case 'Q':
 		return 12
 	case 'J':
-		return 11
+		// part 1 solution: return 11
+		return JOKER_KEY
 	case 'T':
 		return 10
 	default:
@@ -101,10 +115,7 @@ func mapCardToOrder(card rune) int {
 
 func solvePart1(input string) {
 	lines := util.SplitLines(input)
-	hands := util.MapFunc[string, Hand](lines,
-		func(line string) Hand {
-			return parseHand(line)
-		})
+	hands := util.MapFunc[string, Hand](lines, parseHand)
 	groupedHands := groupHands(hands)
 	sortedHands := sortGroupedHands(groupedHands)
 
@@ -118,7 +129,11 @@ func solvePart1(input string) {
 	fmt.Println(sum)
 }
 
+func solvePart2(input string) {
+	solvePart1(input)
+}
+
 func main() {
 	input := util.FetchInput(7)
-	solvePart1(input)
+	solvePart2(input)
 }
