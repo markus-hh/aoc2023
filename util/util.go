@@ -41,10 +41,9 @@ func FetchInput(day int) string {
 }
 
 func SplitLines(input string) (lines []string) {
-	for _, line := range strings.Split(input, "\n") {
-		if line != "" {
-			lines = append(lines, line)
-		}
+	trimmedInput := strings.Trim(input, "\n")
+	for _, line := range strings.Split(trimmedInput, "\n") {
+		lines = append(lines, line)
 	}
 	return
 }
