@@ -13,7 +13,7 @@ import (
 )
 
 type MapElement[T, U any] struct {
-	Key T
+	Key   T
 	Value U
 }
 
@@ -76,32 +76,56 @@ func RemoveDuplicates[T comparable](inputSlice []T) (sliceWithoutDuplicates []T)
 	for k := range elementMap {
 		keys = append(keys, k)
 	}
-	
+
 	return keys
 }
 
 func SolveQuadraticEquation(a float64, b float64, c float64) (leftX float64, rightX float64) {
 	rootValue := math.Sqrt(b*b - 4*a*c)
-	leftX = (-b - rootValue) / (2*a)
-	rightX = (-b + rootValue) / (2*a)
+	leftX = (-b - rootValue) / (2 * a)
+	rightX = (-b + rootValue) / (2 * a)
 	return
 }
 
 func FloatEquals(a float64, b float64) bool {
-	return math.Abs(a - b) < 1e-9
+	return math.Abs(a-b) < 1e-9
 }
 
 // https://stackoverflow.com/a/71624929
 func MapFunc[T, U any](originalSlice []T, mappingFunc func(T) U) []U {
-    mappedSlice := make([]U, len(originalSlice))
-    for i := range originalSlice {
-        mappedSlice[i] = mappingFunc(originalSlice[i])
-    }
-    return mappedSlice
+	mappedSlice := make([]U, len(originalSlice))
+	for index := range originalSlice {
+		mappedSlice[index] = mappingFunc(originalSlice[index])
+	}
+	return mappedSlice
+}
+
+func FilterFunc[T any](originalSlice []T, filterFunc func(T) bool) []T {
+	filteredSlice := []T{}
+	for _, element := range originalSlice {
+		if filterFunc(element) {
+			filteredSlice = append(filteredSlice, element)
+		}
+	}
+	return filteredSlice
+}
+
+func InitSlice[T any](slice []T, value T) []T {
+	for index := range slice {
+		slice[index] = value
+	}
+	return slice
+}
+
+func FillSlice[T any](slice []T, value T, amount int) []T {
+	for index := 0; index < amount; index++ {
+		slice = append(slice, value)
+	}
+	return slice
 }
 
 func MakeHistogram[T comparable](slice []T) (histogram map[T]int) {
-	histogram = map[T]int {}
+	histogram = map[T]int{}
 	for _, element := range slice {
 		histogram[element]++
 	}
@@ -110,9 +134,9 @@ func MakeHistogram[T comparable](slice []T) (histogram map[T]int) {
 
 func SortMapByKey[K cmp.Ordered, V any](inputMap map[K]V) (sortedElements []MapElement[K, V]) {
 	for key, value := range inputMap {
-		element := MapElement[K, V] {
-			 Key: key,
-			 Value: value,
+		element := MapElement[K, V]{
+			Key:   key,
+			Value: value,
 		}
 		sortedElements = append(sortedElements, element)
 	}
@@ -126,9 +150,9 @@ func SortMapByKey[K cmp.Ordered, V any](inputMap map[K]V) (sortedElements []MapE
 
 func SortMapByValue[K comparable, V cmp.Ordered](inputMap map[K]V) (sortedElements []MapElement[K, V]) {
 	for key, value := range inputMap {
-		element := MapElement[K, V] {
-			 Key: key,
-			 Value: value,
+		element := MapElement[K, V]{
+			Key:   key,
+			Value: value,
 		}
 		sortedElements = append(sortedElements, element)
 	}
@@ -145,4 +169,23 @@ func AddAll[T any](container []T, newElements []T) []T {
 		container = append(container, element)
 	}
 	return container
+}
+
+func AtoiUnsafe(input string) int {
+	number, _ := strconv.Atoi(input)
+	return number
+}
+
+func LastFrom[T any](slice []T) T {
+	return slice[len(slice)-1]
+}
+
+func Any[T any](slice []T, predicateFunc func(T)bool) bool {
+	for _, element := range slice {
+		if predicateFunc(element) {
+			return true
+		}
+	}
+
+	return false
 }
