@@ -189,3 +189,26 @@ func Any[T any](slice []T, predicateFunc func(T)bool) bool {
 
 	return false
 }
+
+func NotAny[T any](slice []T, predicateFunc func(T)bool) bool {
+	for _, element := range slice {
+		if predicateFunc(element) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func Min[T cmp.Ordered](slice []T) T {
+	minValue := slice[0]
+	for index := 1; index < len(slice); index++ {
+		minValue = min(minValue, slice[index])
+	}
+
+	return minValue
+}
+
+func Identity[T any](value T) T {
+	return value
+}
