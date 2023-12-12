@@ -8,9 +8,15 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"sort"
 	"strconv"
 	"strings"
 )
+
+type Position2D struct {
+	X int
+	Y int
+}
 
 type MapElement[T, U any] struct {
 	Key   T
@@ -211,4 +217,23 @@ func Min[T cmp.Ordered](slice []T) T {
 
 func Identity[T any](value T) T {
 	return value
+}
+
+func Copy[T any](slice []T) []T {
+	copiedSlice := make([]T, len(slice))
+	copy(copiedSlice, slice)
+	return copiedSlice
+}
+
+func SortPositions(positions []Position2D) {
+	sort.Slice(positions, func(i, j int) bool {
+		if positions[i].Y != positions[j].Y {
+			return cmp.Less(positions[i].Y, positions[j].Y)
+		}
+		return cmp.Less(positions[i].X, positions[j].X)
+	})
+}
+
+func HammingDistance(firstPosition Position2D, secondPosition Position2D) int {
+	return int(math.Abs(float64(firstPosition.X) - float64(secondPosition.X))) + int(math.Abs(float64(firstPosition.Y) - float64(secondPosition.Y)))
 }
