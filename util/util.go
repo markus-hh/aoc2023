@@ -237,3 +237,10 @@ func SortPositions(positions []Position2D) {
 func HammingDistance(firstPosition Position2D, secondPosition Position2D) int {
 	return int(math.Abs(float64(firstPosition.X) - float64(secondPosition.X))) + int(math.Abs(float64(firstPosition.Y) - float64(secondPosition.Y)))
 }
+
+func Runes(line string) (runes []rune) {
+	for _, lineRune := range line {
+		runes = append(runes, lineRune)
+	}
+	return
+} 
